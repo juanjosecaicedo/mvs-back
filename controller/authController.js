@@ -2,7 +2,7 @@ const db = require('../database');
 class AuthController {
   constructor() {}
   login(req, res) {
-    db.query('SELECT * FROM usuarios WHERE usuario = ? AND password = ?',
+    db.query("SELECT p.id AS id_persona, u.id, p.nombre, u.usuario, u.rol FROM (usuarios u JOIN personas p ON (u.id_persona = p.id)) WHERE usuario = ? AND password = ?",
       [req.body.usuario, req.body.password],
       function (err, result) {
         if (result.length > 0) {
