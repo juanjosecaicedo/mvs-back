@@ -18,7 +18,7 @@ class DiezmosController {
       });
   }
   store(req, res) {
-    db.query('INSERT INTO diezmos (id_persona,fecha,cantidad_diezmo) VALUES (?,?,?)',
+    db.query('INSERT INTO diezmos (id_persona,fecha,cantidad) VALUES (?,?,?)',
       [req.body.id_persona, req.body.fecha, req.body.cantidad_diezmo.replace(/[^\d-]/g, '') * 1],
       function (err, result) {
         if (err) {
@@ -36,7 +36,7 @@ class DiezmosController {
       });
   }
   index(req, res) {
-    db.query("SELECT id_diezmo, diezmos.id_persona, WEEK(diezmos.fecha) AS semana, DATE_FORMAT(diezmos.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad_diezmo FROM diezmos, personas WHERE diezmos.id_persona = personas.id ORDER BY diezmos.fecha DESC", function (err, result) {
+    db.query("SELECT id_diezmo, diezmos.id_persona, WEEK(diezmos.fecha) AS semana, DATE_FORMAT(diezmos.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad AS cantidad_diezmo FROM diezmos, personas WHERE diezmos.id_persona = personas.id ORDER BY diezmos.fecha DESC", function (err, result) {
       if (!err) {
         res.send(result);
       } else {
@@ -47,7 +47,7 @@ class DiezmosController {
     });
   }
   edit(req, res) {
-    db.query("SELECT id_diezmo,id_persona,cantidad_diezmo, DATE_FORMAT(diezmos.fecha, '%Y-%m-%d') AS fecha FROM diezmos WHERE id_diezmo = ?",
+    db.query("SELECT id_diezmo,id_persona, cantidad AS cantidad_diezmo, DATE_FORMAT(diezmos.fecha, '%Y-%m-%d') AS fecha FROM diezmos WHERE id_diezmo = ?",
       [req.params.id], (err, result) => {
         if (!err) {
           res.send(result)
@@ -55,7 +55,7 @@ class DiezmosController {
       });
   }
   update(req, res) {
-    db.query('UPDATE diezmos SET id_persona = ?, cantidad_diezmo = ?, fecha = ? WHERE id_diezmo = ?',
+    db.query('UPDATE diezmos SET id_persona = ?, cantidad = ?, fecha = ? WHERE id_diezmo = ?',
       [req.body.id_persona, remplasar(req.body.cantidad_diezmo), req.body.fecha, req.body.id],
       function (err, result) {
         if (!err) {

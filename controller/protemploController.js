@@ -6,7 +6,7 @@ const {
 class ProtemploController {
   constructor() {}
   index(req, res) {
-    db.query("SELECT id_protemplo, protemplo.id_persona, WEEK(protemplo.fecha) AS semana, DATE_FORMAT(protemplo.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad_protemplo FROM protemplo, personas WHERE protemplo.id_persona = personas.id ORDER BY protemplo.fecha DESC", function (err, result) {
+    db.query("SELECT id_protemplo, protemplo.id_persona, WEEK(protemplo.fecha) AS semana, DATE_FORMAT(protemplo.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad AS cantidad_protemplo FROM protemplo, personas WHERE protemplo.id_persona = personas.id ORDER BY protemplo.fecha DESC", function (err, result) {
       if (!err) {
         res.send(result);
       } else {
@@ -17,7 +17,7 @@ class ProtemploController {
     })
   }
   store(req, res) {
-    db.query('INSERT INTO protemplo (id_persona,fecha,cantidad_protemplo) VALUES (?,?,?)',
+    db.query('INSERT INTO protemplo (id_persona,fecha,cantidad) VALUES (?,?,?)',
       [req.body.id_persona, req.body.fecha, remplasar(req.body.cantidad_protemplo)],
       function (err, result) {
         if (err) {
@@ -35,7 +35,7 @@ class ProtemploController {
       });
   }
   edit(req, res) {
-    db.query("SELECT id_protemplo,id_persona,cantidad_protemplo, DATE_FORMAT(protemplo.fecha, '%Y-%m-%d') AS fecha FROM protemplo WHERE id_protemplo = ?",
+    db.query("SELECT id_protemplo,id_persona,cantidad AS cantidad_protemplo, DATE_FORMAT(protemplo.fecha, '%Y-%m-%d') AS fecha FROM protemplo WHERE id_protemplo = ?",
       [req.params.id], (err, result) => {
         if (!err) {
           res.send(result)
@@ -43,7 +43,7 @@ class ProtemploController {
       })
   }
   update(req, res) {
-    db.query('UPDATE protemplo SET id_persona = ?, cantidad_protemplo = ?, fecha = ? WHERE id_protemplo = ?',
+    db.query('UPDATE protemplo SET id_persona = ?, cantidad = ?, fecha = ? WHERE id_protemplo = ?',
       [req.body.id_persona, remplasar(req.body.cantidad_protemplo), req.body.fecha, req.body.id],
       function (err, result) {
         if (!err) {

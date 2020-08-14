@@ -6,7 +6,7 @@ const {
 class OfrendasController {
   constructor() {}
   index(req, res) {
-    db.query("SELECT id_ofrenda, ofrendas.id_persona, WEEK(ofrendas.fecha) AS semana, DATE_FORMAT(ofrendas.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad_ofrenda FROM ofrendas, personas WHERE ofrendas.id_persona = personas.id ORDER BY ofrendas.fecha DESC", function (err, result) {
+    db.query("SELECT id_ofrenda, ofrendas.id_persona, WEEK(ofrendas.fecha) AS semana, DATE_FORMAT(ofrendas.fecha, '%d del mes %m del %Y') AS fecha, personas.cedula, personas.nombre, personas.apellido1, personas.apellido2, cantidad AS cantidad_ofrenda FROM ofrendas, personas WHERE ofrendas.id_persona = personas.id ORDER BY ofrendas.fecha DESC", function (err, result) {
       if (!err) {
         res.send(result);
       } else {
@@ -17,7 +17,7 @@ class OfrendasController {
     })
   }
   store(req, res) {    
-    db.query('INSERT INTO ofrendas (id_persona,fecha,cantidad_ofrenda) VALUES (?,?,?)',
+    db.query('INSERT INTO ofrendas (id_persona,fecha,cantidad) VALUES (?,?,?)',
       [req.body.id_persona, req.body.fecha, remplasar(req.body.cantidad_ofrenda)],
       function (err, result) {
         if (err) {
@@ -35,7 +35,7 @@ class OfrendasController {
       });
   }
   edit(req, res) {
-    db.query("SELECT id_ofrenda,id_persona,cantidad_ofrenda, DATE_FORMAT(ofrendas.fecha, '%Y-%m-%d') AS fecha FROM ofrendas WHERE id_ofrenda = ?",
+    db.query("SELECT id_ofrenda,id_persona,cantidad AS cantidad_ofrenda, DATE_FORMAT(ofrendas.fecha, '%Y-%m-%d') AS fecha FROM ofrendas WHERE id_ofrenda = ?",
       [req.params.id], (err, result) => {
         if (!err) {
           res.send(result)
@@ -44,7 +44,7 @@ class OfrendasController {
   }
   update(req, res) {
 
-    db.query('UPDATE ofrendas SET id_persona = ?, cantidad_ofrenda = ?, fecha = ? WHERE id_ofrenda = ?',
+    db.query('UPDATE ofrendas SET id_persona = ?, cantidad = ?, fecha = ? WHERE id_ofrenda = ?',
       [req.body.id_persona, remplasar(req.body.cantidad_ofrenda), req.body.fecha, req.body.id],
       function (err, result) {
         if (!err) {
